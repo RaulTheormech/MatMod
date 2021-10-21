@@ -1,1 +1,5 @@
-
+cmake_minimum_required (VERSION 3.8)
+project ("HW1")
+add_executable (HW1 "HW1.cpp" "HW1.h")
+add_subdirectory(homework1)
+add_subdirectory(homework2)
