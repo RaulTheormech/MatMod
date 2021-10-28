@@ -1,4 +1,3 @@
-#include "HW1.h"
 #include <iostream>
 #include <fstream>
 #include <cmath>
