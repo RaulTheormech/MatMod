@@ -51,8 +51,8 @@ int main() {
 	double x_right = 0;
 	double y_right = 0;
 
-	double start_dist_left = 0;
-	double start_dist_right =0;
+	double start_dist_left = -2;
+	double start_dist_right =-2;
 
 	double leftmost_x = 0;
 	double leftmost_y = 0;
