@@ -9,7 +9,10 @@ int hand(double a_x, double a_y, double x, double y) {
 		//влево
 		return 1;
 	}
-	
+	else if (a_y == 0 && a_x == 0) {
+		//вправо
+		return 0;
+	}
 	else {
 		//вправо
 		return 0;
@@ -48,8 +51,8 @@ int main() {
 	double x_right = 0;
 	double y_right = 0;
 
-	double start_dist_left = -2;
-	double start_dist_right =-2;
+	double start_dist_left = -100000000000;
+	double start_dist_right =-100000;
 
 	double leftmost_x = 0;
 	double leftmost_y = 0;
