@@ -69,6 +69,10 @@ int main() {
 
 	while (getline(input_file, line))
 	{
+		if(line.length() == 0 || line.length() == 1){
+                continue;
+            }
+		else{
 		x = get_x(input_file);
 		y = get_y(input_file);
 		int help = hand(double(a_x), double(a_y), double(x), double(y));
@@ -98,5 +102,5 @@ int main() {
 
 	return 0;
 }
-
+}
 
