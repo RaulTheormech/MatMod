@@ -75,7 +75,7 @@ int main() {
 		
 		if (help == 1) {
 			double dist_left = abs((-(a_x)*y + (a_y)*x)) / sqrt(a_x*a_x + a_y*a_y);
-			if (dist_left > start_dist_left) {
+			if (dist_left >= start_dist_left) {
 				leftmost_x = x;
 				leftmost_y = y;
 				start_dist_left = dist_left;
@@ -84,7 +84,7 @@ int main() {
 		}
 		else if (help == 0) {
 			double dist_right = abs((-(a_x)*y + (a_y)*x)) / sqrt(a_x*a_x + a_y*a_y);
-			if (dist_right > start_dist_right) {
+			if (dist_right >= start_dist_right) {
 				rightmost_x = x;
 				rightmost_y = y;
 				start_dist_right = dist_right;
