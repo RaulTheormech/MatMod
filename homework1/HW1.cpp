@@ -55,7 +55,6 @@ int main() {
 	size_t readed = fread(&a, 1, 1, f);
 
 	if (readed) {
-		cout << "File contains data" << endl;
 	
 	double a_x;
 	double a_y;
