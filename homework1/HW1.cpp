@@ -47,7 +47,7 @@ int main() {
 	FILE* f = fopen(filename, "rb");
 	if (!f)
 	{
-		cout << "File is not exists" << endl;
+		
 		return 0;
 	}
 
@@ -114,11 +114,13 @@ int main() {
 	cout << "Leftmost: " << leftmost_x <<" " << leftmost_y << endl;
 
 	cout << "Rightmost: " << rightmost_x <<" " << rightmost_y << endl;
+	
 	}
 	else {
 		cout << "Leftmost: " << 0 << " " << 0 << endl;
 
 		cout << "Rightmost: " <<0 << " " << 0 << endl;
+	
 	}
 	return 0;
 }
