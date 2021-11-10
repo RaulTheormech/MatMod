@@ -1,7 +1,10 @@
+
 #include <iostream>
 #include <fstream>
 #include <cmath>
 #include <string>
+
+#include <stdio.h>
 using namespace std;
 
 int hand(double a_x, double a_y, double x, double y) {
@@ -39,6 +42,21 @@ double get_y(ifstream& input_file)
 }
 
 int main() {
+	const char filename[] = "in.txt";
+
+	FILE* f = fopen(filename, "rb");
+	if (!f)
+	{
+		cout << "File is not exists" << endl;
+		return 0;
+	}
+
+	char a;
+	size_t readed = fread(&a, 1, 1, f);
+
+	if (readed) {
+		cout << "File contains data" << endl;
+	
 	double a_x;
 	double a_y;
 	
@@ -51,8 +69,8 @@ int main() {
 	double x_right = 0;
 	double y_right = 0;
 
-	double start_dist_left = -100000000000;
-	double start_dist_right =-100000;
+	double start_dist_left = -1;
+	double start_dist_right = -1;
 
 	double leftmost_x = 0;
 	double leftmost_y = 0;
@@ -60,6 +78,8 @@ int main() {
 	double rightmost_x = 0;
 	double rightmost_y = 0;
 
+	
+	
 	string line;
 
 	ifstream input_file("in.txt");
@@ -69,13 +89,12 @@ int main() {
 
 	while (getline(input_file, line))
 	{
-		
 		x = get_x(input_file);
 		y = get_y(input_file);
 		int help = hand(double(a_x), double(a_y), double(x), double(y));
 		
 		if (help == 1) {
-			double dist_left = abs((-(a_x)*y + (a_y)*x)) / sqrt(a_x*a_x + a_y*a_y);
+			double dist_left = abs((-(a_x)*y + (a_y)*x)) / sqrt(pow(a_x, 2) + pow(a_y, 2));
 			if (dist_left > start_dist_left) {
 				leftmost_x = x;
 				leftmost_y = y;
@@ -84,7 +103,7 @@ int main() {
 			}
 		}
 		else if (help == 0) {
-			double dist_right = abs((-(a_x)*y + (a_y)*x)) / sqrt(a_x*a_x + a_y*a_y);
+			double dist_right = abs((-(a_x)*y + (a_y)*x)) / sqrt(pow(a_x, 2) + pow(a_y, 2));
 			if (dist_right > start_dist_right) {
 				rightmost_x = x;
 				rightmost_y = y;
@@ -96,8 +115,13 @@ int main() {
 	cout << "Leftmost: " << leftmost_x <<" " << leftmost_y << endl;
 
 	cout << "Rightmost: " << rightmost_x <<" " << rightmost_y << endl;
+	}
+	else {
+		cout << "Leftmost: " << 0 << " " << 0 << endl;
 
+		cout << "Rightmost: " <<0 << " " << 0 << endl;
+	}
 	return 0;
-
 }
+
 
