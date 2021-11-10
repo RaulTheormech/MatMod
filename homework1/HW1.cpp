@@ -93,7 +93,7 @@ int main() {
 		int help = hand(double(a_x), double(a_y), double(x), double(y));
 		
 		if (help == 1) {
-			double dist_left = abs((-(a_x)*y + (a_y)*x)) / sqrt(pow(a_x, 2) + pow(a_y, 2));
+			double dist_left = abs((-(a_x)*y + (a_y)*x)) / sqrt(a_x*a_x + a_y*a_y);
 			if (dist_left >= start_dist_left) {
 				leftmost_x = x;
 				leftmost_y = y;
@@ -102,7 +102,7 @@ int main() {
 			}
 		}
 		else if (help == 0) {
-			double dist_right = abs((-(a_x)*y + (a_y)*x)) / sqrt(pow(a_x, 2) + pow(a_y, 2));
+			double dist_right = abs((-(a_x)*y + (a_y)*x)) / sqrt(a_x*a_x + a_y*a_y);
 			if (dist_right >= start_dist_right) {
 				rightmost_x = x;
 				rightmost_y = y;
