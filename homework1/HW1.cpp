@@ -116,9 +116,9 @@ int main() {
 	cout << "Rightmost: " << rightmost_x <<" " << rightmost_y << endl;
 	}
 	else {
-//		cout << "Leftmost: " << 0 << " " << 0 << endl;
-cout << "(0,0)"<< endl;
-//		cout << "Rightmost: " <<0 << " " << 0 << endl;
+		cout << "Leftmost: " << 0 << " " << 0 << endl;
+
+		cout << "Rightmost: " <<0 << " " << 0 << endl;
 	}
 	return 0;
 }
