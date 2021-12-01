@@ -8,8 +8,8 @@ using namespace std;
 int main() {
     string line;
     ifstream file("in.txt");
-    double x0;
-    double y0;
+    double A;
+    double B;
     file >> A >> B;
     double x_left = 0; 
     double y_left = 0; 
