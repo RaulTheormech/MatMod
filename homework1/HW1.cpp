@@ -83,11 +83,11 @@ int main() {
                 }} }}
     input_data.close();
     if (h_right_1 == 0){
-        cout << "Leftmost: " << X_left_m << " " << Y_left_m<<'\n';
-        cout << "Rightmost: " << X_r_start << " " << Y_r_start<<'\n';
+        cout << "\nLeftmost: " << X_left_m << " " << Y_left_m;
+        cout << "\nRightmost: " << X_r_start << " " << Y_r_start;
     }
     else {
-        cout << "Leftmost: " << X_left_m << " " << Y_left_m<<'\n';
-        cout << "Rightmost: " << X_right_m << " " << Y_right_m<<'\n';
+        cout << "\nLeftmost: " << X_left_m << " " << Y_left_m;
+        cout << "\nRightmost: " << X_right_m << " " << Y_right_m;
     }
 }
