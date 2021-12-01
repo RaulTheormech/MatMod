@@ -1,128 +1,93 @@
-
 #include <iostream>
-#include <fstream>
 #include <cmath>
+#include <fstream>
 #include <string>
-
-#include <stdio.h>
+#include <stdlib.h>
 using namespace std;
 
-int hand(double a_x, double a_y, double x, double y) {
-	if ((a_x * y - a_y * x) > 0) {
-		//влево
-		return 1;
-	}
-	else if (a_y == 0 && a_x == 0) {
-		//вправо
-		return 0;
-	}
-	else {
-		//вправо
-		return 0;
-	}
-
-}
-
-double get_x(ifstream& input_file) 
-{
-	string coord1;
-	double x;
-	input_file >> coord1;
-	x = stod(coord1);
-	return x;
-}
-
-double get_y(ifstream& input_file)  
-{
-	string coord2;
-	double y;
-	input_file >> ws >> coord2;
-	y = stod(coord2);
-	return y;
-}
-
 int main() {
-	const char filename[] = "in.txt";
+    string line;
+    ifstream input_data("in.tXt");
 
-	FILE* f = fopen(filename, "rb");
-	if (!f)
-	{
-		
-		return 0;
-	}
+    double X0;
+    double Y0;
+    input_data >> X0 >> Y0;
 
-	char a;
-	size_t readed = fread(&a, 1, 1, f);
+    double X_0 = X0, Y_0 = Y0;
 
-	if (readed) {
-	
-	double a_x;
-	double a_y;
-	
-	double x;
-	double y;
+    double X_left = 0, Y_left = 0, X_right = 0, Y_right = 0;
+    double X_left_m = 0, Y_left_m = 0, X_right_m = 0, Y_right_m = 0;
 
-	double x_left = 0;
-	double y_left = 0;
+    double h_r_start = fabs((X_0 * X_right - X_0 * Y_right) / sqrt(X_0 * X_0 + Y_0 * Y_0));
+    double h_left_0 = fabs((Y_0 * X_left - X_0 * Y_left) / sqrt(X_0 * X_0 + Y_0* Y_0));
 
-	double x_right = 0;
-	double y_right = 0;
+    double X;
+    double Y;
+    double h_left_1;
+    double h_right_1;
+    double Y_r_start;
+    double X_r_start;
 
-	double start_dist_left = -1;
-	double start_dist_right = -1;
+    while (input_data >> X >> Y) {
+        if ((X_0>= 0 and Y_0 > 0) or (X_0 > 0 and Y_0 <= 0)) {
+            if (-Y_0 * X + X_0 * Y > 0) {
+                X_left = X;
+                Y_left = Y;
 
-	double leftmost_x = 0;
-	double leftmost_y = 0;
+                h_left_1 = fabs((Y_0 * X_left - X_0 * Y_left) / sqrt(X_0 * X_0 + Y_0 * Y_0));
+                if (h_left_1 >= h_left_0) {
+                    
+                    X_left_m = X;
+                    Y_left_m = Y;
+					h_left_0 = h_left_1;
+                }
+            } 
+			else {
+                X_right = X;
+                Y_right = Y;
+                h_right_1 = fabs((Y_0 * X_right - X_0 * Y_right) / sqrt(X_0 * X_0 + Y_0 * X_0));
+                 if (h_right_1 >= h_r_start) {
+                    h_r_start = h_right_1;
+                    X_right_m = X;
+                    Y_right_m = Y;
+                }
+                if (h_right_1 == 0){
+                    X_r_start = X;
+                    Y_r_start = Y;
+                }
+				}
+				}
+        if ((X_0 <= 0 and Y_0 < 0) or (X_0 < 0 and Y_0 >= 0)) {
+            if (-Y_0 * X + X_0 * Y > 0) {
+                X_left = X;
+                Y_left = Y;
+         h_left_1 = fabs((Y_0 * X_left - X_0 * Y_left) / sqrt(X_0 * X_0 + Y_0 * Y_0));
+                if (h_left_1 >= h_left_0) {
+                    h_left_0 = h_left_1;
+                    X_left_m = X;
+                    Y_left_m = Y;
+                }
 
-	double rightmost_x = 0;
-	double rightmost_y = 0;
-
-	
-	
-	string line;
-
-	ifstream input_file("in.txt");
-	
-	a_x = get_x(input_file);
-	a_y = get_y(input_file);
-
-	while (getline(input_file, line))
-	{
-		x = get_x(input_file);
-		y = get_y(input_file);
-		int help = hand(double(a_x), double(a_y), double(x), double(y));
-		
-		if (help == 1) {
-			double dist_left = abs((-(a_x)*y + (a_y)*x)) / sqrt(a_x*a_x + a_y*a_y);
-			if (dist_left >= start_dist_left) {
-				leftmost_x = x;
-				leftmost_y = y;
-				start_dist_left = dist_left;
-				
-			}
-		}
-		else if (help == 0) {
-			double dist_right = abs((-(a_x)*y + (a_y)*x)) / sqrt(a_x*a_x + a_y*a_y);
-			if (dist_right >= start_dist_right) {
-				rightmost_x = x;
-				rightmost_y = y;
-				start_dist_right = dist_right;
-			}
-             }
-
-	}
-	cout << "Leftmost: " << leftmost_x <<" " << leftmost_y << endl;
-
-	cout << "Rightmost: " << rightmost_x <<" " << rightmost_y << endl;
-	
-	}
-	else {
-		cout << "Leftmost: " << 0 << " " << 0 << endl;
-
-		cout << "Rightmost: " <<0 << " " << 0 << endl;
-	
-	}
-	return 0;
+            } else {
+                X_right = X;
+                Y_right = Y;
+				h_right_1 = fabs((Y_0 * X_right - X_0 * Y_right) / sqrt(X_0 * X_0 + Y_0 * Y_0));
+       if (h_right_1 >= h_r_start) {
+                    h_r_start = h_right_1;
+                    X_right_m = X;
+                    Y_right_m = Y;
+                }
+                if (h_right_1 == 0){
+                    X_r_start = X;
+                    Y_r_start = Y;
+                }} }}
+    input_data.close();
+    if (h_right_1 == 0){
+        cout << "Leftmost: " << X_left_m << " " << Y_left_m<<'\n';
+        cout << "Rightmost: " << X_r_start << " " << Y_r_start<<'\n';
+    }
+    else {
+        cout << "Leftmost: " << X_left_m << " " << Y_left_m<<'\n';
+        cout << "Rightmost: " << X_right_m << " " << Y_right_m<<'\n';
+    }
 }
-
-
