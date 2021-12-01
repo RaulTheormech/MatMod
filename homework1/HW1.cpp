@@ -1,94 +1,115 @@
 #include <iostream>
-#include <cmath>
-#include <vector>
 #include <fstream>
+#include <vector>
+#include <cmath>
 #include <string>
 #include <stdlib.h>
 using namespace std;
 
 int main() {
     string line;
-    ifstream input_data("in.tXt");
+    ifstream file("in.txt");
 
-    double X0;
-    double Y0;
-    input_data >> X0 >> Y0;
+    double x0;
+    double y0;
+    file >> x0 >> y0;
 
-    double X_0 = X0, Y_0 = Y0;
+    double A = x0, B = y0;
 
-    double X_left = 0, Y_left = 0, X_right = 0, Y_right = 0;
-    double X_left_m = 0, Y_left_m = 0, X_right_m = 0, Y_right_m = 0;
+    double x_left = 0, y_left = 0, x_right = 0, y_right = 0;
+    double x_left_m = 0, y_left_m = 0, x_right_m = 0, y_right_m = 0;
 
-    double h_r_start = fabs((X_0 * X_right - X_0 * Y_right) / sqrt(X_0 * X_0 + Y_0 * Y_0));
-    double h_left_0 = fabs((Y_0 * X_left - X_0 * Y_left) / sqrt(X_0 * X_0 + Y_0* Y_0));
+    double h_right_0 = fabs((B * x_right - A * y_right) / sqrt(A * A + B * B));
+    double h_left_0 = fabs((B * x_left - A * y_left) / sqrt(A * A + B * B));
 
-    double X;
-    double Y;
+    double x;
+    double y;
     double h_left_1;
     double h_right_1;
-    double Y_r_start;
-    double X_r_start;
+    double y_right_m_0;
+    double x_right_m_0;
 
-    while (input_data >> X >> Y) {
-        if ((X_0>= 0 and Y_0 > 0) or (X_0 > 0 and Y_0 <= 0)) {
-            if (-Y_0 * X + X_0 * Y > 0) {
-                X_left = X;
-                Y_left = Y;
+    while (file >> x >> y) {
+        if ((A >= 0 and B > 0) or (A > 0 and B <= 0)) {
+            if (B * x - A * y < 0) {
+                x_left = x;
+                y_left = y;
 
-                h_left_1 = fabs((Y_0 * X_left - X_0 * Y_left) / sqrt(X_0 * X_0 + Y_0 * Y_0));
-                if (h_left_1 >= h_left_0) {
-                    
-                    X_left_m = X;
-                    Y_left_m = Y;
-					h_left_0 = h_left_1;
-                }
-            } 
-			else {
-                X_right = X;
-                Y_right = Y;
-                h_right_1 = fabs((Y_0 * X_right - X_0 * Y_right) / sqrt(X_0 * X_0 + Y_0 * X_0));
-                 if (h_right_1 >= h_r_start) {
-                    h_r_start = h_right_1;
-                    X_right_m = X;
-                    Y_right_m = Y;
-                }
-                if (h_right_1 == 0){
-                    X_r_start = X;
-                    Y_r_start = Y;
-                }
-				}
-				}
-        if ((X_0 <= 0 and Y_0 < 0) or (X_0 < 0 and Y_0 >= 0)) {
-            if (-Y_0 * X + X_0 * Y > 0) {
-                X_left = X;
-                Y_left = Y;
-         h_left_1 = fabs((Y_0 * X_left - X_0 * Y_left) / sqrt(X_0 * X_0 + Y_0 * Y_0));
+//                cout << "\nx_l = " << x;
+//                cout << "\ny_l = " << y;
+
+                h_left_1 = fabs((B * x_left - A * y_left) / sqrt(A * A + B * B));
+                h_left_1 = round(h_left_1 * 10000000000.0) / 10000000000.0;
                 if (h_left_1 >= h_left_0) {
                     h_left_0 = h_left_1;
-                    X_left_m = X;
-                    Y_left_m = Y;
+                    x_left_m = x;
+                    y_left_m = y;
+                }
+            } else {
+                x_right = x;
+                y_right = y;
+
+//                cout << "\nx_r = " << x;
+//                cout << "\ny_r = " << y;
+
+                h_right_1 = fabs((B * x_right - A * y_right) / sqrt(A * A + B * B));
+                h_right_1 = round(h_right_1 * 10000000000.0) / 10000000000.0;
+                if (h_right_1 >= h_right_0) {
+                    h_right_0 = h_right_1;
+                    x_right_m = x;
+                    y_right_m = y;
+                }
+                if (h_right_1 == 0){
+                    x_right_m_0 = x;
+                    y_right_m_0 = y;
+                }
+            }
+        }
+        if ((A <= 0 and B < 0) or (A < 0 and B >= 0)) {
+            if (B * x - A * y < 0) {
+                x_left = x;
+                y_left = y;
+
+//                cout << "\nx_l = " << x;
+//                cout << "\ny_l = " << y;
+
+                h_left_1 = fabs((B * x_left - A * y_left) / sqrt(A * A + B * B));
+                h_left_1 = round(h_left_1 * 10000000000.0) / 10000000000.0;
+                if (h_left_1 >= h_left_0) {
+                    h_left_0 = h_left_1;
+                    x_left_m = x;
+                    y_left_m = y;
                 }
 
             } else {
-                X_right = X;
-                Y_right = Y;
-				h_right_1 = fabs((Y_0 * X_right - X_0 * Y_right) / sqrt(X_0 * X_0 + Y_0 * Y_0));
-       if (h_right_1 >= h_r_start) {
-                    h_r_start = h_right_1;
-                    X_right_m = X;
-                    Y_right_m = Y;
+                x_right = x;
+                y_right = y;
+
+//                cout << "\nx_r = " << x;
+//                cout << "\ny_r = " << y;
+
+                h_right_1 = fabs((B * x_right - A * y_right) / sqrt(A * A + B * B));
+                h_right_1 = round(h_right_1 * 10000000000.0) / 10000000000.0;
+                if (h_right_1 >= h_right_0) {
+                    h_right_0 = h_right_1;
+                    x_right_m = x;
+                    y_right_m = y;
                 }
                 if (h_right_1 == 0){
-                    X_r_start = X;
-                    Y_r_start = Y;
-                }} }}
-    input_data.close();
+                    x_right_m_0 = x;
+                    y_right_m_0 = y;
+                }
+            }
+        }
+    }
+    file.close();
     if (h_right_1 == 0){
-        cout << "\nLeftmost: " << X_left_m << " " << Y_left_m;
-        cout << "\nRightmost: " << X_r_start << " " << Y_r_start;
+        cout << "\nLeftmost: " << x_left_m << " " << y_left_m;
+        cout << "\nRightmost: " << x_right_m_0 << " " << y_right_m_0;
     }
     else {
-        cout << "\nLeftmost: " << X_left_m << " " << Y_left_m;
-        cout << "\nRightmost: " << X_right_m << " " << Y_right_m;
+        cout << "\nLeftmost: " << x_left_m << " " << y_left_m;
+        cout << "\nRightmost: " << x_right_m << " " << y_right_m;
     }
 }
+
