@@ -1,139 +1,80 @@
 #include <iostream>
-#include <fstream>
-#include <vector>
-#include <cmath>
 #include <string>
+#include <vector>
+#include <fstream>
+#include <algorithm>
 using namespace std;
-
-//globals.cpp
-double g = 9.81;
-
-double time(double x0, double x, double v_x, int j)
-{
-    return (x - x0) / (j * v_x);
+void update_initial_conds(vector<vector<double>> &wall, vector<double> &V) { 
+    reverse(wall.begin(), wall.end());
+    V[1] = V[1] - 9.81 * wall[0][0] / V[0];
+    double x_0 = wall[0][0];
+    wall[0][0] = 0;
+    for (size_t i = 1; i < wall.size(); i++) {
+        wall[i][0] = x_0 - wall[i][0];
+    }
 }
-
-double vy_func(double v_y0, double t)
-{
-    return v_y0 - g * t;
+void update_barriers(vector<vector<double>> &wall, vector<double> &V) {
+    vector<vector<double>> temp_barriers = {wall[0]};
+    double wall_h;
+    for (size_t i = 1; i < wall.size(); i++) {
+        wall_h = wall[0][1] + V[1] / V[0] * wall[i][0] - 9.81 * 0.5 / (V[0]*V[0]) * wall[i][0] * wall[i][0];
+        temp_barriers.push_back({bloatarriers[i][0], wall[i][1], wall[i][2]});
+        if (wall[i][1] >= wall_h) {
+            temp_barriers[i][1] = wall_h;
+            break;    }
+    }
+    wall.swap(temp_barriers);
 }
-
-double y_func(double h0, double v_y, double t)
-{
-    return h0 + v_y * t - (g *pow(t, 2))/2;
+double solution(vector<vector<double>> wall, vector<double> V) {
+    while (true) {
+        update_initial_conds(wall, V);
+        if (wall.size() == 2) {
+            if (wall[0][2] > wall[1][2]) {
+                return wall[1][2];
+            } else {
+                return wall[0][2];
+            }
+        }
+        if (wall[0][2] == 0) {
+            return 0;
+        }
+        update_barriers(wall, V);
+    }
 }
-
-double get_h0(ifstream& input_file)
-{
-    string first;
-    double h0;
-    input_file >> first;
-    h0 = stod(first);
-    return h0;
-}
-
-double get_v0(ifstream& input_file, double& v_x, double& v_y) 
-{
-    string v1;
-    string v2;
-    input_file >> v1 >> ws >> v2;
-    v_x = stod(v1);
-    v_y = stod(v2);
-    return v_x, v_y;
-}
-
-void get_coords(ifstream& input_file, vector<double>& X, vector<double>& H) 
-{
-    string x;
-    string h;
-    input_file >> x >> ws >> h;
-    X.push_back(stod(x));
-    H.push_back(stod(h));
-}
-void help(double x0, double h0, double v_x, double v_y, vector<double>& X, vector<double>& H, int& result, int j)
-{
+int main(int argc, char** argv) {
+    if(argc < 2 || argc > 2){
+        cout << "аргументов нет или их больше чем мы ожидаем"<< endl;
+    }
+    vector <double> V(2);   
+	vector <vector<double>> wall; 
+    ifstream file;
+    file.open(argv[1]);
+    double h;
+    file >> h;
+    file >> V[0]; file >> V[1];
+    double g=9.81;
+    double current = 0; 
+    double x;
     double y;
-    double t;
-    for (int i = result; (i > -1 && i < X.size()); i = i + j)
-    {
-        t = time(x0, X[i + j], v_x, j);
-        y = y_func(h0, v_y, t);
-        if (H[i + j] < y)
-        {
-            result += j;
-        }
-        else
-        {
-            double v_yt = vy_func(v_y, t);
-            j = j*(-1);
-            help(X[i], y, v_x, v_yt, X, H, result, j);
-            return;
+    double wall_h;
+    wall.push_back({0, h, current}); 
+    while (!file.eof() && file >> x && file >> y) {
+        current = current+ 1;
+        wall_h = h + V[1] / V[0] * x - g * 0.5 / (V[0]*V[0]) * x * x;
+        wall.push_back({x, y, current});
+        if (y >= wall_h) {
+            wall[current][1] = wall_h;
+            break;
         }
     }
-}
-
-
-void calculate(ifstream& input_file, double& h0, double& v_x, double& v_y, vector<double>& X, vector<double>& H, int& result)
-{
-    string line;
-    double t;
-    double y;
-    while (getline(input_file, line))
-    {
-        get_coords(input_file, X, H);
-        t = time(0, X.back(), v_x, 1);
-        y = y_func(h0, v_y, t);
-        if (H.back() < y)
-        {
-            result++;
-        }
-     
-        else if ((y < 0) || (result == 0))
-        {
-            return;
-        }
-        else
-        {
-            double v_yt = vy_func(v_y, t);
-            help(X.back(), y, v_x, v_yt, X, H, result, -1);
-            return;
-        }
+    file.close();
+    if (y < wall_h) { 
+        cout << int(current) << endl;
     }
-}
-
-
-
-int main(int argc, char** argv)
-{
-    string file;
-
-    if (argc == 2)
-    {
-        file = argv[1];
-        cout << "1st argument: " << argv[1] << endl;
+    else if (wall.size() <= 2) { 
+     	cout << 0 << endl;
     }
-    else {
-        file = "in.txt";
-    }
-    ifstream input_file(file);
-
-    double h0;
-    double v_x;
-    double v_y;
-
-    int result = 0;
-
-    string line;
-
-    vector <double> X;
-    vector <double> H;
- 
-    h0= get_h0(input_file);
-    v_x, v_y=get_v0(input_file, v_x, v_y);
-
-    calculate(input_file, h0, v_x, v_y, X, H, result);
-
-    cout << result;
-    
+    cout << int(solution(wall, V)) << endl;
     return 0;
 }
+
