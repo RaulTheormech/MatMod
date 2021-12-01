@@ -54,11 +54,11 @@ int main() {
 
     file.close();
     if (h_right_1 == 0){
-        cout << "\nLeftmost: " << x_left_m << " " << y_left_m;
-        cout << "\nRightmost: " << x_right_m_0 << " " << y_right_m_0;
+        cout << "Leftmost: " << x_left_m << " " << y_left_m<<"\n";
+        cout << "Rightmost: " << x_right_m_0 << " " << y_right_m_0<<"\n";
     }
     else {
-        cout << "\nLeftmost: " << x_left_m << " " << y_left_m;
-        cout << "\nRightmost: " << x_right_m << " " << y_right_m;
+        cout << "Leftmost: " << x_left_m << " " << y_left_m<<"\n";
+        cout << "Rightmost: " << x_right_m << " " << y_right_m<<"\n";
     }
 }
