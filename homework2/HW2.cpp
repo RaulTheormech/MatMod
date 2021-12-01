@@ -3,81 +3,102 @@
 #include <vector>
 #include <fstream>
 #include <algorithm>
+
 using namespace std;
-void calculate(vector<vector<double>> &wall, vector<double> &V);
-void wall_func(vector<vector<double>> &wall, vector<double> &V);
-double solution(vector<vector<double>> wall, vector<double> V);
+
+void update_initial_conds(vector<vector<float>> &barriers, vector<float> &velocity);
+void update_barriers(vector<vector<float>> &barriers, vector<float> &velocity);
+float find_sector(vector<vector<float>> barriers, vector<float> velocity);
+
 int main(int argc, char** argv) {
     if(argc < 2 || argc > 2){
         cout << "аргументов нет или их больше чем мы ожидаем"<< endl;
     }
-    vector <double> V(2);   
-	vector <vector<double>> wall; 
+    // остальной код программы
+    vector<float> velocity(2); // вектор для скорости
+    vector<vector<float>> barriers; // вектор для барьеров
+
+    // считывание до первого столкновения
     ifstream file;
     file.open(argv[1]);
-    double h;
+    float h;
     file >> h;
-    file >> V[0]; file >> V[1];
-    double g=9.81;
-    double current = 0; 
-    double x;
-    double y;
-    double wall_h;
-    wall.push_back({0, h, current}); 
+    file >> velocity[0]; file >> velocity[1];
+
+    float index = 0; // индекс текущего барьера
+    float x;   // положение текущего
+    float y;   // барьера
+    float height_on_cur_barrier;
+    barriers.push_back({0, h, index}); // добавляем начальный мнимый барьер
     while (!file.eof() && file >> x && file >> y) {
-        current = current+ 1;
-        wall_h = h + V[1] / V[0] * x - g * 0.5 / (V[0]*V[0]) * x * x;
-        wall.push_back({x, y, current});
-        if (y >= wall_h) {
-            wall[current][1] = wall_h;
+        index += 1;
+        height_on_cur_barrier = h + velocity[1] / velocity[0] * x - 9.81 * 0.5 / (velocity[0]*velocity[0]) * x * x;
+        barriers.push_back({x, y, index});
+        if (y >= height_on_cur_barrier) {
+            barriers[index][1] = height_on_cur_barrier; // обновим высоту начала полета
             break;
         }
     }
     file.close();
-    if (y < wall_h) { 
-        cout << int(current) << endl;
+
+    // особые случаи задачи
+    if (y < height_on_cur_barrier) { // когда мяч перелетел через все барьеры
+        cout << int(index) << endl;
+        return 0;
     }
-    else if (wall.size() <= 2) { 
-     	cout << 0 << endl;
+    if (barriers.size() <= 2) { // когда мяч столкнулся с первым барьером или барьеров вообще не было
+        cout << 0 << endl;
+        return 0;
     }
-    cout << int(solution(wall, V)) << endl;
+
+    cout << int(find_sector(barriers, velocity)) << endl;
     return 0;
 }
-void calculate(vector<vector<double>> &wall, vector<double> &V) { 
-    reverse(wall.begin(), wall.end());
-    V[1] = V[1] - 9.81 * wall[0][0] / V[0];
-    double x_0 = wall[0][0];
-    wall[0][0] = 0;
-    for (size_t i = 1; i < wall.size(); i++) {
-        wall[i][0] = x_0 - wall[i][0];
+
+//функция для пересчета иксов в массиве (отражение массива барьеров относительно последнего)
+void update_initial_conds(vector<vector<float>> &barriers, vector<float> &velocity) {
+    // развернем массив барьеров
+    reverse(barriers.begin(), barriers.end());
+
+    // пересчет скорости
+    velocity[1] = velocity[1] - 9.81 * barriers[0][0] / velocity[0];
+
+    float x_0 = barriers[0][0];
+    barriers[0][0] = 0;
+    for (size_t i = 1; i < barriers.size(); i++) {
+        barriers[i][0] = x_0 - barriers[i][0];
     }
 }
-void wall_func(vector<vector<double>> &wall, vector<double> &V) {
-    vector<vector<double>> temp_barriers = {wall[0]};
-    double wall_h;
-    for (size_t i = 1; i < wall.size(); i++) {
-        wall_h = wall[0][1] + V[1] / V[0] * wall[i][0] - 9.81 * 0.5 / (V[0]*V[0]) * wall[i][0] * wall[i][0];
-        temp_barriers.push_back({bloatarriers[i][0], wall[i][1], wall[i][2]});
-        if (wall[i][1] >= wall_h) {
-            temp_barriers[i][1] = wall_h;
+
+// функция определения нового массива барьеров
+void update_barriers(vector<vector<float>> &barriers, vector<float> &velocity) {
+    vector<vector<float>> temp_barriers = {barriers[0]};
+    float height_on_cur_barrier;
+    for (size_t i = 1; i < barriers.size(); i++) {
+        height_on_cur_barrier = barriers[0][1] + velocity[1] / velocity[0] * barriers[i][0] - 9.81 * 0.5 / (velocity[0]*velocity[0]) * barriers[i][0] * barriers[i][0];
+        temp_barriers.push_back({barriers[i][0], barriers[i][1], barriers[i][2]});
+        if (barriers[i][1] >= height_on_cur_barrier) {
+            temp_barriers[i][1] = height_on_cur_barrier; // обновим высоту начала полета
             break;
         }
     }
-    wall.swap(temp_barriers);
+    barriers.swap(temp_barriers);
 }
-double solution(vector<vector<double>> wall, vector<double> V) {
+
+// функция посика конечной области куда попадет мяч
+float find_sector(vector<vector<float>> barriers, vector<float> velocity) {
     while (true) {
-        calculate(wall, V);
-        if (wall.size() == 2) {
-            if (wall[0][2] > wall[1][2]) {
-                return wall[1][2];
+        update_initial_conds(barriers, velocity);
+        if (barriers.size() == 2) {
+            if (barriers[0][2] > barriers[1][2]) {
+                return barriers[1][2];
             } else {
-                return wall[0][2];
+                return barriers[0][2];
             }
         }
-        if (wall[0][2] == 0) {
+        if (barriers[0][2] == 0) {
             return 0;
         }
-        wall_func(wall, V);
+        update_barriers(barriers, velocity);
     }
 }
