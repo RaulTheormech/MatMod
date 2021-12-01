@@ -1,4 +1,3 @@
-#include <iostream>
 #include <fstream>
 #include <cmath> 
 #include <string>
@@ -8,9 +7,9 @@ using namespace std;
 int main() {
     string line;
     ifstream file("in.txt");
-    double A;
-    double B;
-    file >> A >> B;
+    double X_0;
+    double Y_0;
+    file >> X_0 >> Y_0;
     double x_left = 0; 
     double y_left = 0; 
     double x_right = 0;
@@ -19,21 +18,20 @@ int main() {
     double y_left_m = 0;
     double x_right_m = 0;
     double y_right_m = 0;
-    double h_right_0 = fabs((B * x_right - A * y_right) / sqrt(A * A + B * B));
-    double h_left_0 = fabs((B * x_left - A * y_left) / sqrt(A * A + B * B));
+    double h_right_0 = fabs((Y_0 * x_right - X_0 * y_right) / sqrt(X_0 * X_0 + Y_0 * Y_0));
+    double h_left_0 = fabs((Y_0 * x_left - X_0 * y_left) / sqrt(X_0 * X_0 + Y_0 * Y_0));
     double x;
     double y;
     double h_left_1;
     double h_right_1;
     double y_right_m_0;
     double x_right_m_0;
-
+void left(X_0,Y_0,x,y,x_left ,y_left, x_right, y_right,x_left_m ,y_left_m, x_right_m, y_right_m,h_right_0, h_right_1)
     while (file >> x >> y) {
-        if ((A >= 0 and B > 0) or (A > 0 and B <= 0)) {
-            if (B * x - A * y < 0) {
+                   if (Y_0 * x - X_0 * y < 0) {
                 x_left = x;
                 y_left = y;
-                h_left_1 = fabs((B * x_left - A * y_left) / sqrt(A * A + B * B));
+                h_left_1 = fabs((Y_0 * x_left - X_0 * y_left) / sqrt(X_0 * X_0 + Y_0 * Y_0));
                 if (h_left_1 >= h_left_0) {
                     h_left_0 = h_left_1;
                     x_left_m = x;
@@ -42,7 +40,7 @@ int main() {
             } else {
                 x_right = x;
                 y_right = y;
-                h_right_1 = fabs((B * x_right - A * y_right) / sqrt(A * A + B * B));
+                h_right_1 = fabs((Y_0 * x_right - X_0 * y_right) / sqrt(X_0 * X_0 + Y_0 * Y_0));
                 if (h_right_1 >= h_right_0) {
                     h_right_0 = h_right_1;
                     x_right_m = x;
@@ -53,34 +51,7 @@ int main() {
                     y_right_m_0 = y;
                 }}
         }
-        if ((A <= 0 and B < 0) or (A < 0 and B >= 0)) {
-            if (B * x - A * y < 0) {
-                x_left = x;
-                y_left = y;
-                h_left_1 = fabs((B * x_left - A * y_left) / sqrt(A * A + B * B));
-                if (h_left_1 >= h_left_0) {
-                    h_left_0 = h_left_1;
-                    x_left_m = x;
-                    y_left_m = y;
-                }
-} else {
-                x_right = x;
-                y_right = y;
 
-            h_right_1 = fabs((B * x_right - A * y_right) / sqrt(A * A + B * B));
-                
-                if (h_right_1 >= h_right_0) {
-                    h_right_0 = h_right_1;
-                    x_right_m = x;
-                    y_right_m = y;
-                }
-                if (h_right_1 == 0){
-                    x_right_m_0 = x;
-                    y_right_m_0 = y;
-                }
-            }
-        }
-    }
     file.close();
     if (h_right_1 == 0){
         cout << "\nLeftmost: " << x_left_m << " " << y_left_m;
@@ -91,4 +62,3 @@ int main() {
         cout << "\nRightmost: " << x_right_m << " " << y_right_m;
     }
 }
-
