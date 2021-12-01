@@ -26,7 +26,6 @@ int main() {
     double h_right_1;
     double y_right_m_0;
     double x_right_m_0;
-void left(X_0,Y_0,x,y,x_left ,y_left, x_right, y_right,x_left_m ,y_left_m, x_right_m, y_right_m,h_right_0, h_right_1)
     while (file >> x >> y) {
                    if (Y_0 * x - X_0 * y < 0) {
                 x_left = x;
