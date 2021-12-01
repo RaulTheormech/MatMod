@@ -57,7 +57,7 @@ int main() {
             if (B * x - A * y < 0) {
                 x_left = x;
                 y_left = y;
-                h_left_1 = fabs((B * x_left - A * y_left) / sqrt(A * A + B * B))
+                h_left_1 = fabs((B * x_left - A * y_left) / sqrt(A * A + B * B));
                 if (h_left_1 >= h_left_0) {
                     h_left_0 = h_left_1;
                     x_left_m = x;
