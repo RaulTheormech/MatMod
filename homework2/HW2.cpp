@@ -6,7 +6,7 @@
 using namespace std;
 void calc(vector<vector<double>> &wall, vector<double> &V);
 void new_wall(vector<vector<double>> &wall, vector<double> &V);
-float solution(vector<vector<double>> wall, vector<double> V);
+double solution(vector<vector<double>> wall, vector<double> V);
 double g;
 int main(int argc, char** argv) {
     if(argc < 2 || argc > 2){
