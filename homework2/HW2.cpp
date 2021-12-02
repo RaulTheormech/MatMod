@@ -4,10 +4,44 @@
 #include <fstream>
 #include <algorithm>
 using namespace std;
-
-void calc(vector<vector<float>> &wall, vector<float> &V);
-void new_wall(vector<vector<float>> &wall, vector<float> &V);
-float solution(vector<vector<float>> wall, vector<float> V);
+void calc(vector<vector<float>> &wall, vector<float> &V) {
+  reverse(wall.begin(), wall.end()); 
+    V[1] = V[1] - g * wall[0][0] / V[0];
+float x_0 = wall[0][0];
+    wall[0][0] = 0;
+    for (size_t i = 1; i < wall.size(); i++) {
+        wall[i][0] = x_0 - wall[i][0];
+    }
+}
+void new_wall(vector<vector<float>> &wall, vector<float> &V) {
+    vector<vector<float>> tem_wall = {wall[0]};
+    float h_curwall;
+    for (size_t i = 1; i < wall.size(); i++) {
+        h_curwall = wall[0][1] + V[1] / V[0] * wall[i][0] - g * 0.5 / (V[0]*V[0]) * wall[i][0] * wall[i][0];
+        tem_wall.push_back({wall[i][0], wall[i][1], wall[i][2]});
+        if (wall[i][1] >= h_curwall) {
+            tem_wall[i][1] = h_curwall; 
+            break;
+        }
+    }
+    wall.swap(tem_wall);
+}
+float solution(vector<vector<float>> wall, vector<float> V) {
+    while (true) {
+        calc(wall, V);
+        if (wall.size() == 2) {
+            if (wall[0][2] > wall[1][2]) {
+                return wall[1][2];
+            } else {
+                return wall[0][2];
+            }
+        }
+        if (wall[0][2] == 0) {
+            return 0;
+        }
+        new_wall(wall, V);
+    }
+}
 double g;
 int main(int argc, char** argv) {
     if(argc < 2 || argc > 2){
@@ -37,61 +71,13 @@ int main(int argc, char** argv) {
         }
     }
     input_data.close();
-
-    // особые случаи задачи
     if (y < h_curwall) { 
         cout << int(current) << endl;
-        return 0;
-    }
+        return 0; }
     if (wall.size() <= 2) { 
         cout << 0 << endl;
         return 0;
     }
+cout << int(solution(wall, V)) << endl;
+    return 0;}
 
-    cout << int(solution(wall, V)) << endl;
-    return 0;
-}
-
-
-void calc(vector<vector<float>> &wall, vector<float> &V) {
-  reverse(wall.begin(), wall.end()); 
-    V[1] = V[1] - g * wall[0][0] / V[0];
-float x_0 = wall[0][0];
-    wall[0][0] = 0;
-    for (size_t i = 1; i < wall.size(); i++) {
-        wall[i][0] = x_0 - wall[i][0];
-    }
-}
-
-
-void new_wall(vector<vector<float>> &wall, vector<float> &V) {
-    vector<vector<float>> tem_wall = {wall[0]};
-    float h_curwall;
-    for (size_t i = 1; i < wall.size(); i++) {
-        h_curwall = wall[0][1] + V[1] / V[0] * wall[i][0] - g * 0.5 / (V[0]*V[0]) * wall[i][0] * wall[i][0];
-        tem_wall.push_back({wall[i][0], wall[i][1], wall[i][2]});
-        if (wall[i][1] >= h_curwall) {
-            tem_wall[i][1] = h_curwall; 
-            break;
-        }
-    }
-    wall.swap(tem_wall);
-}
-
-
-float solution(vector<vector<float>> wall, vector<float> V) {
-    while (true) {
-        calc(wall, V);
-        if (wall.size() == 2) {
-            if (wall[0][2] > wall[1][2]) {
-                return wall[1][2];
-            } else {
-                return wall[0][2];
-            }
-        }
-        if (wall[0][2] == 0) {
-            return 0;
-        }
-        new_wall(wall, V);
-    }
-}
