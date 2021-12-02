@@ -4,6 +4,9 @@
 #include <fstream>
 #include <algorithm>
 using namespace std;
+void calc(vector<vector<float>> &wall, vector<float> &V);
+void new_wall(vector<vector<float>> &wall, vector<float> &V);
+float solution(vector<vector<float>> wall, vector<float> V);
 void calc(vector<vector<float>> &wall, vector<float> &V) {
   reverse(wall.begin(), wall.end()); 
     V[1] = V[1] - g * wall[0][0] / V[0];
